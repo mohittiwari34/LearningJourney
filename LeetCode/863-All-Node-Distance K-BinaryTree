@@ -1,0 +1,50 @@
+class Solution {
+public:
+    void parenty(TreeNode* root,unordered_map<TreeNode*,TreeNode*>&parent,TreeNode*target){
+        queue<TreeNode*>q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode*m=q.front();
+            q.pop();
+            if(m->left){
+                parent[m->left]=m;
+                q.push(m->left);
+            }
+            if(m->right){
+                parent[m->right]=m;
+                q.push(m->right);
+            }
+        }
+    }
+
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        unordered_map<TreeNode*,TreeNode*>parent;
+        parenty(root,parent,target);
+        unordered_map<TreeNode*,bool>visited;
+        queue<TreeNode*>p;
+        p.push(target);
+        visited[target]=true;
+        int currentLevel=0;
+        while(!p.empty()){
+            int size=p.size();
+            if(currentLevel++==k){
+                break;
+            }
+            for(int i=0;i<size;i++){
+                TreeNode*current=p.front();
+                p.pop();
+                if(current->left &&!visited[current->left]){
+                    p.push(current->left);
+                    visited[current->left]=true;
+                }
+                if(current->right &&!visited[current->right]){
+                    p.push(current->right);
+                    visited[current->right]=true;
+                }
+                if(parent[current] && !visited[parent[current]]){
+                    p.push(parent[current]);
+                    visited[parent[current]]=true;
+                }
+            }
+
+        }
